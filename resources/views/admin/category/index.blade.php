@@ -1,9 +1,7 @@
 @extends('admin.dashboard')
 @section('content')
-<button><a href="{{route('admin.categories.create')}}">Thêm danh mục</a></button>
-    @if(session('success'))
-    <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
+<a href="{{route('admin.categories.create')}}"><button>Thêm</button></a>
+@include('components.err_sc')
 <table class="table table-bordered border-dark">
     <thead>
         <tr>
@@ -17,7 +15,14 @@
         <tr>
             <td>{{$item->id}}</td>
             <td>{{$item->name}}</td>
-            <td><a href="{{ route('admin.categories.edit', $item->id) }}">Sửa</a></td>
+            <td>
+                <a href="{{ route('admin.categories.edit', $item->id) }}"><button>Sửa</button></a>
+                <form action="{{ route('admin.categories.destroy', $item->id) }}" method="POST" style="display: inline;">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" onclick="return confirm('Bạn có chắc chắn muốn xóa danh mục này?')">Xóa</button>
+                </form>
+            </td>
         </tr>
         @endforeach
     </tbody>

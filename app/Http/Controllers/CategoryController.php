@@ -17,19 +17,49 @@ class CategoryController extends Controller
     {
         return view('admin.category.create');
     }
-    public function store(Request $request)
+     public function store(Request $request)
+    {
+        
+            $request->validate([
+                'category_name' => 'required|string|max:100'
+            ]);
+        try {
+            DB::table('categories')->insert([
+                'name' => $request->category_name
+            ]);
+            return redirect()
+                ->route('admin.categories.index')
+                ->with('success', 'Category created successfully!');
+        } catch (\Exception $e) {
+            return back()->withErrors($e->getMessage());
+            }
+    }
+    public function edit($category)
+    {
+        $category = Category::findOrFail($category);
+        return view('admin.category.edit', compact('category'));
+    }
+    public function update(Request $request, $category)
     {
         $validated = $request->validate([
-            'category_name' => 'required|string|max:3',
+            'category_name' => 'required|string|max:100',
         ]);
-        DB::table('categories')->insert([
-            'name' => $validated['category_name']
+        try{
+            DB::table('categories')->where('id', $category)->update([
+                        'name' => $validated['category_name']
         ]);
-        return redirect()->route('admin.categories.index')->with('success', 'Category created successfully!');
+        }
+        catch(\Exception $e){
+            return back()->withErrors($e->getMessage());
+        }
+      
+        return redirect()->route('admin.categories.index')->with('success', 'Category updated successfully!');
     }
-    public function edit($id)
+    public function destroy($category)
     {
-        $category = Category::findOrFail($id);
-        return view('admin.categories.edit', compact('category'));
+        DB::table('categories')->where('id', $category)->delete();
+        return redirect()->route('admin.categories.index')->with('success', 'Category deleted successfully!');
     }
 }
+
+

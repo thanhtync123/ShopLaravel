@@ -59,3 +59,6 @@ VALUES
 (3, 'Chuột Logitech G102', 399000, 50, 'Chuột gaming Logitech G102', 'g102.jpg'),
 
 (3, 'Bàn phím AKKO 3068', 1299000, 20, 'Bàn phím cơ AKKO 3068', 'akko3068.jpg');
+
+ALTER TABLE categories
+ADD UNIQUE (name);
