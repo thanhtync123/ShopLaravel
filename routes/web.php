@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
-
+use App\Http\Controllers\CategoryController;
 $categories = [
     [
         'name' => 'Sneakers',
@@ -184,6 +184,148 @@ Route::get('/account', function () {
     return view('shop.account');
 })->name('account');
 
+Route::get('/admin', function () use ($products) {
+    $stats = [
+        [
+            'label' => 'Doanh thu',
+            'value' => '128.4tr',
+            'trend' => '+12.8%',
+            'icon' => 'wallet-cards',
+            'tone' => 'coral',
+        ],
+        [
+            'label' => 'Đơn hàng',
+            'value' => '846',
+            'trend' => '+8.2%',
+            'icon' => 'shopping-cart',
+            'tone' => 'teal',
+        ],
+        [
+            'label' => 'Khách hàng',
+            'value' => '3,214',
+            'trend' => '+5.4%',
+            'icon' => 'users-round',
+            'tone' => 'violet',
+        ],
+        [
+            'label' => 'Tồn kho thấp',
+            'value' => '18',
+            'trend' => '-3 sp',
+            'icon' => 'package-search',
+            'tone' => 'amber',
+        ],
+    ];
+
+    $orders = [
+        ['code' => '#LS-1048', 'customer' => 'Minh Anh', 'items' => 'Aero Knit Runner', 'total' => '1.290.000đ', 'status' => 'Đã giao', 'status_class' => 'success', 'time' => '09:42'],
+        ['code' => '#LS-1047', 'customer' => 'Quang Huy', 'items' => 'Pulse Wireless Headphone', 'total' => '2.190.000đ', 'status' => 'Đang xử lý', 'status_class' => 'warning', 'time' => '09:18'],
+        ['code' => '#LS-1046', 'customer' => 'Thanh Ngân', 'items' => 'Metro Daypack 22L', 'total' => '890.000đ', 'status' => 'Chờ thanh toán', 'status_class' => 'muted', 'time' => '08:56'],
+        ['code' => '#LS-1045', 'customer' => 'Đức Bảo', 'items' => 'Luna Classic Watch', 'total' => '1.650.000đ', 'status' => 'Đã giao', 'status_class' => 'success', 'time' => '08:31'],
+    ];
+
+    $topProducts = collect($products)->take(4)->values()->map(function ($product, $index) {
+        $sold = [214, 187, 142, 128][$index];
+        $stockPercent = [78, 62, 48, 36][$index];
+
+        return array_merge($product, [
+            'sold' => $sold,
+            'stock_percent' => $stockPercent,
+        ]);
+    });
+
+    $tasks = [
+        ['label' => 'Duyệt 12 đơn mới', 'done' => false],
+        ['label' => 'Cập nhật banner khuyến mãi', 'done' => true],
+        ['label' => 'Kiểm tra 18 sản phẩm sắp hết', 'done' => false],
+        ['label' => 'Trả lời 7 ticket hỗ trợ', 'done' => false],
+    ];
+
+    $activities = [
+        ['text' => 'Đơn #LS-1048 đã chuyển sang trạng thái đã giao', 'time' => '10 phút trước'],
+        ['text' => 'Sản phẩm Aero Knit Runner tăng 24 lượt xem', 'time' => '34 phút trước'],
+        ['text' => 'Khách Minh Anh vừa tạo tài khoản mới', 'time' => '1 giờ trước'],
+    ];
+
+    return view('admin.dashboard', compact('stats', 'orders', 'topProducts', 'tasks', 'activities'));
+})->name('admin.dashboard');
+
+Route::get('/admin/product', function () use ($products) {
+    $productStats = [
+        [
+            'label' => 'Tổng sản phẩm',
+            'value' => '248',
+            'trend' => '+14 mới',
+            'icon' => 'package',
+            'tone' => 'teal',
+        ],
+        [
+            'label' => 'Đang bán',
+            'value' => '216',
+            'trend' => '87%',
+            'icon' => 'badge-check',
+            'tone' => 'coral',
+        ],
+        [
+            'label' => 'Sắp hết hàng',
+            'value' => '18',
+            'trend' => 'Cần nhập',
+            'icon' => 'triangle-alert',
+            'tone' => 'amber',
+        ],
+        [
+            'label' => 'Ẩn khỏi shop',
+            'value' => '14',
+            'trend' => '-2 tuần này',
+            'icon' => 'eye-off',
+            'tone' => 'violet',
+        ],
+    ];
+
+    $categoryNames = [
+        'aero-knit-runner' => 'Sneakers',
+        'pulse-wireless-headphone' => 'Phụ kiện',
+        'metro-daypack-22l' => 'Lifestyle',
+        'luna-classic-watch' => 'Phụ kiện',
+        'canvas-overshirt' => 'Thời trang',
+        'nova-sunglasses' => 'Phụ kiện',
+        'studio-camera-sling' => 'Lifestyle',
+        'trail-bottle-750ml' => 'Lifestyle',
+    ];
+
+    $inventory = [
+        'aero-knit-runner' => ['sku' => 'SNK-1024', 'quantity' => 42, 'sold' => 214, 'status' => 'Đang bán', 'status_class' => 'success', 'stock_percent' => 78],
+        'pulse-wireless-headphone' => ['sku' => 'ACC-2208', 'quantity' => 35, 'sold' => 187, 'status' => 'Đang bán', 'status_class' => 'success', 'stock_percent' => 64],
+        'metro-daypack-22l' => ['sku' => 'LFS-3312', 'quantity' => 24, 'sold' => 142, 'status' => 'Đang bán', 'status_class' => 'success', 'stock_percent' => 52],
+        'luna-classic-watch' => ['sku' => 'ACC-4471', 'quantity' => 18, 'sold' => 128, 'status' => 'Đang bán', 'status_class' => 'success', 'stock_percent' => 46],
+        'canvas-overshirt' => ['sku' => 'FAS-5106', 'quantity' => 12, 'sold' => 96, 'status' => 'Sắp hết', 'status_class' => 'warning', 'stock_percent' => 28],
+        'nova-sunglasses' => ['sku' => 'ACC-6120', 'quantity' => 9, 'sold' => 88, 'status' => 'Sắp hết', 'status_class' => 'warning', 'stock_percent' => 22],
+        'studio-camera-sling' => ['sku' => 'LFS-7064', 'quantity' => 6, 'sold' => 45, 'status' => 'Tạm ẩn', 'status_class' => 'muted', 'stock_percent' => 16],
+        'trail-bottle-750ml' => ['sku' => 'LFS-8158', 'quantity' => 31, 'sold' => 51, 'status' => 'Đang bán', 'status_class' => 'success', 'stock_percent' => 58],
+    ];
+
+    $productRows = collect($products)->map(function ($product) use ($categoryNames, $inventory) {
+        $meta = $inventory[$product['slug']] ?? ['sku' => 'SKU-DEMO', 'quantity' => 0, 'sold' => 0, 'status' => 'Nháp', 'status_class' => 'muted', 'stock_percent' => 0];
+
+        return array_merge($product, $meta, [
+            'category_label' => $categoryNames[$product['slug']] ?? $product['category'],
+            'revenue' => $product['price'] * $meta['sold'],
+        ]);
+    });
+
+    $categoryFilters = ['Tất cả', 'Sneakers', 'Phụ kiện', 'Thời trang', 'Lifestyle'];
+
+    return view('admin.product', compact('productStats', 'productRows', 'categoryFilters'));
+})->name('admin.product');
+
 Route::get('/contact', function () {
     return view('shop.contact');
 })->name('contact');
+
+Route::prefix('admin')->group(function () {
+    Route::get('categories', [CategoryController::class, 'index'])->name('admin.categories.index');
+    Route::get('categories/create', [CategoryController::class, 'create'])->name('admin.categories.create');
+    Route::post('categories', [CategoryController::class, 'store'])->name('admin.categories.store');
+    Route::get('categories/{id}/edit', [CategoryController::class, 'edit'])->name('admin.categories.edit');
+    Route::put('categories/{id}', [CategoryController::class, 'update'])->name('admin.categories.update');
+    Route::delete('categories/{id}', [CategoryController::class, 'destroy'])->name('admin.categories.destroy');
+});
