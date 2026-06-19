@@ -37,8 +37,7 @@
                     <i data-lucide="layout-dashboard"></i>
                     <span>Danh mục</span>
                 </a>
-
-                <a>
+                <a class="{{ request()->routeIs('admin.products.index') ? 'is-active' : '' }}" href="{{ route('admin.products.index') }}">
                     <i data-lucide="package"></i>
                     <span>Sản phẩm</span>
                 </a>

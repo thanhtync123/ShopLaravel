@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ProductController;
 $categories = [
     [
         'name' => 'Sneakers',
@@ -249,73 +250,6 @@ Route::get('/admin', function () use ($products) {
     return view('admin.dashboard', compact('stats', 'orders', 'topProducts', 'tasks', 'activities'));
 })->name('admin.dashboard');
 
-Route::get('/admin/product', function () use ($products) {
-    $productStats = [
-        [
-            'label' => 'Tổng sản phẩm',
-            'value' => '248',
-            'trend' => '+14 mới',
-            'icon' => 'package',
-            'tone' => 'teal',
-        ],
-        [
-            'label' => 'Đang bán',
-            'value' => '216',
-            'trend' => '87%',
-            'icon' => 'badge-check',
-            'tone' => 'coral',
-        ],
-        [
-            'label' => 'Sắp hết hàng',
-            'value' => '18',
-            'trend' => 'Cần nhập',
-            'icon' => 'triangle-alert',
-            'tone' => 'amber',
-        ],
-        [
-            'label' => 'Ẩn khỏi shop',
-            'value' => '14',
-            'trend' => '-2 tuần này',
-            'icon' => 'eye-off',
-            'tone' => 'violet',
-        ],
-    ];
-
-    $categoryNames = [
-        'aero-knit-runner' => 'Sneakers',
-        'pulse-wireless-headphone' => 'Phụ kiện',
-        'metro-daypack-22l' => 'Lifestyle',
-        'luna-classic-watch' => 'Phụ kiện',
-        'canvas-overshirt' => 'Thời trang',
-        'nova-sunglasses' => 'Phụ kiện',
-        'studio-camera-sling' => 'Lifestyle',
-        'trail-bottle-750ml' => 'Lifestyle',
-    ];
-
-    $inventory = [
-        'aero-knit-runner' => ['sku' => 'SNK-1024', 'quantity' => 42, 'sold' => 214, 'status' => 'Đang bán', 'status_class' => 'success', 'stock_percent' => 78],
-        'pulse-wireless-headphone' => ['sku' => 'ACC-2208', 'quantity' => 35, 'sold' => 187, 'status' => 'Đang bán', 'status_class' => 'success', 'stock_percent' => 64],
-        'metro-daypack-22l' => ['sku' => 'LFS-3312', 'quantity' => 24, 'sold' => 142, 'status' => 'Đang bán', 'status_class' => 'success', 'stock_percent' => 52],
-        'luna-classic-watch' => ['sku' => 'ACC-4471', 'quantity' => 18, 'sold' => 128, 'status' => 'Đang bán', 'status_class' => 'success', 'stock_percent' => 46],
-        'canvas-overshirt' => ['sku' => 'FAS-5106', 'quantity' => 12, 'sold' => 96, 'status' => 'Sắp hết', 'status_class' => 'warning', 'stock_percent' => 28],
-        'nova-sunglasses' => ['sku' => 'ACC-6120', 'quantity' => 9, 'sold' => 88, 'status' => 'Sắp hết', 'status_class' => 'warning', 'stock_percent' => 22],
-        'studio-camera-sling' => ['sku' => 'LFS-7064', 'quantity' => 6, 'sold' => 45, 'status' => 'Tạm ẩn', 'status_class' => 'muted', 'stock_percent' => 16],
-        'trail-bottle-750ml' => ['sku' => 'LFS-8158', 'quantity' => 31, 'sold' => 51, 'status' => 'Đang bán', 'status_class' => 'success', 'stock_percent' => 58],
-    ];
-
-    $productRows = collect($products)->map(function ($product) use ($categoryNames, $inventory) {
-        $meta = $inventory[$product['slug']] ?? ['sku' => 'SKU-DEMO', 'quantity' => 0, 'sold' => 0, 'status' => 'Nháp', 'status_class' => 'muted', 'stock_percent' => 0];
-
-        return array_merge($product, $meta, [
-            'category_label' => $categoryNames[$product['slug']] ?? $product['category'],
-            'revenue' => $product['price'] * $meta['sold'],
-        ]);
-    });
-
-    $categoryFilters = ['Tất cả', 'Sneakers', 'Phụ kiện', 'Thời trang', 'Lifestyle'];
-
-    return view('admin.product', compact('productStats', 'productRows', 'categoryFilters'));
-})->name('admin.product');
 
 Route::get('/contact', function () {
     return view('shop.contact');
@@ -335,4 +269,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::delete('categories/{id}', [CategoryController::class, 'destroy'])
         ->name('categories.destroy');
 
+    Route::get('products', [ProductController::class, 'index'])
+        ->name('products.index');
+    Route::post('products/store', [ProductController::class, 'create'])
+        ->name('products.create');
+    Route::post('products/update', [ProductController::class, 'update'])
+        ->name('products.update');
 });
