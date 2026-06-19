@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\Shop\ShopController;
 $categories = [
     [
         'name' => 'Sneakers',
@@ -161,9 +162,7 @@ Route::get('/', function () {
     return view('index');
 })->name('home');
 
-Route::get('/shop', function () {
-    return view('shop.index');
-})->name('shop');
+
 
 Route::get('/san-pham/{slug}', function (string $slug) use ($products) {
     $product = collect($products)->firstWhere('slug', $slug);
@@ -271,8 +270,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
     Route::get('products', [ProductController::class, 'index'])
         ->name('products.index');
-    Route::post('products/store', [ProductController::class, 'create'])
+    Route::post('products/create', [ProductController::class, 'create'])
         ->name('products.create');
     Route::post('products/update', [ProductController::class, 'update'])
         ->name('products.update');
+    Route::post('products/delete/{id}', [ProductController::class, 'delete'])
+        ->name('products.delete');
 });
+    Route::get('shop', [ShopController::class, 'index'])
+        ->name('shop.index');

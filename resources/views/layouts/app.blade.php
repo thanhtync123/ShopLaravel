@@ -28,7 +28,7 @@
                 <span class="brand__text">Luma Shop</span>
             </a>
 
-            <form class="header-search" action="{{ route('shop') }}" method="get">
+            <form class="header-search" action="{{ route('shop.index') }}" method="get">
                 <i data-lucide="search"></i>
                 <input type="search" name="q" placeholder="Tìm sneaker, balo, tai nghe..." value="{{ request('q') }}">
                 <button type="submit">Tìm</button>
@@ -36,7 +36,7 @@
 
             <nav class="primary-nav" aria-label="Menu chinh">
                 <a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'is-active' : '' }}">Trang chủ</a>
-                <a href="{{ route('shop') }}" class="{{ request()->routeIs('shop') || request()->routeIs('product.show') ? 'is-active' : '' }}">Cửa hàng</a>
+                <!-- <a href="{{ route('shop.index') }}" class="{{ request()->routeIs('shop') || request()->routeIs('product.show') ? 'is-active' : '' }}">Cửa hàng</a> -->
                 <a href="{{ route('cart') }}" class="{{ request()->routeIs('cart') ? 'is-active' : '' }}">Giỏ hàng</a>
                 <a href="{{ route('checkout') }}" class="{{ request()->routeIs('checkout') ? 'is-active' : '' }}">Thanh toán</a>
                 <a href="{{ route('contact') }}" class="{{ request()->routeIs('contact') ? 'is-active' : '' }}">Liên hệ</a>
@@ -57,12 +57,12 @@
         </div>
 
         <div class="mobile-panel" data-mobile-menu>
-            <form class="mobile-search" action="{{ route('shop') }}" method="get">
+            <form class="mobile-search" action="{{ route('shop.index') }}" method="get">
                 <i data-lucide="search"></i>
                 <input type="search" name="q" placeholder="Tìm sản phẩm...">
             </form>
             <a href="{{ route('home') }}">Trang chủ</a>
-            <a href="{{ route('shop') }}">Cửa hàng</a>
+            <a href="{{ route('shop.index') }}">Cửa hàng</a>
             <a href="{{ route('cart') }}">Giỏ hàng</a>
             <a href="{{ route('checkout') }}">Thanh toán</a>
             <a href="{{ route('account') }}">Tài khoản</a>
@@ -85,7 +85,7 @@
             </div>
             <div>
                 <h3>Cửa hàng</h3>
-                <a href="{{ route('shop') }}">Tất cả sản phẩm</a>
+                <a href="{{ route('shop.index') }}">Tất cả sản phẩm</a>
                 <a href="{{ route('cart') }}">Giỏ hàng</a>
                 <a href="{{ route('checkout') }}">Thanh toán</a>
             </div>
